@@ -20,14 +20,18 @@ pipeline {
                         branches.each { branch ->
                             def commitUrl = branch.commit.url
                             def commitResponse = sh(script: "curl -s -H 'Authorization: token ${ACCESS_TOKEN}' ${commitUrl}", returnStdout: true).trim()
-                            def lastCommitDate = readJSON(text: commitResponse).commit.committer.date
+                            def lastCommitDateStr = readJSON(text: commitResponse).commit.committer.date
 
-                            def daysDifference = (today - new Date(lastCommitDate)) / (1000 * 60 * 60 * 24)
+                            // Handling date parsing
+                            def lastCommitDate = new Date.parse("yyyy-MM-dd'T'HH:mm:ss'Z'", lastCommitDateStr)
+
+                            def daysDifference = (today.time - lastCommitDate.time) / (1000 * 60 * 60 * 24)
 
                             if (daysDifference <= 90) {
                                 recentBranches.add(branch.name)
                             }
                         }
+
 
                         // Echo the list of recent branches to Jenkins console
                         echo "Recent Branches: ${recentBranches}"
