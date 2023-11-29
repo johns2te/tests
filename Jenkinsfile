@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Fetch Branches with Recent Commits') {
             steps {
-                withCredentials([string(credentialsId: 'tjohns-thunder-pat', variable: 'ACCESS_TOKEN')]) {
+                withCredentials([string(credentialsId: 'github-token', variable: 'ACCESS_TOKEN')]) {
                     script {
                         def repoOwner = 'tjohns-thunder' // Replace with your GitHub repository owner/organization
                         def repoName = 'insurance-frontend' // Replace with your GitHub repository name
